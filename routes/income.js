@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var connection = require('../lib/dbConnection');
+var Income = require('../models/Income');
 
 var auth = require('../middlewares/authentication');//-------Middleware
 

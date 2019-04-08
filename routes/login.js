@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var connection = require('../lib/dbConnection');
+var User = require("../models/User");
 
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
@@ -21,7 +22,7 @@ passport.use(new LocalStrategy({
 router.post('/',
   passport.authenticate('local', 
   {
-    successRedirect: '/homepage',
+    successRedirect: '/homepagenpm ',
     failureRedirect: '404',
     failureFlash: true
   }))
