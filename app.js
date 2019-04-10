@@ -10,6 +10,7 @@ var passport = require('passport');
 
 var indexRouter = require('./routes/homepage');
 var idxRouter = require('./routes/index');
+var incRouter = require('./routes/incomeMongo');
 //-------------------------------------------------------------------------------------------------------
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
@@ -58,6 +59,9 @@ passport.deserializeUser(function (uid, done) {//-------passport Deserialize
 
 app.use('/', indexRouter);
 app.use('/index', idxRouter);
+
+app.use('/inc', incRouter);
+
 //-----------------------------------------------------------
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
