@@ -1,38 +1,37 @@
 var express = require('express');
 var router = express.Router();
-var connection = require('../lib/dbConnection');
 var Income = require('../models/Income');
 
 var auth = require('../middlewares/authentication');//-------Middleware
 
 router.get('/', auth.isLoggedIn, function (req, res, next) {//------income table of current user
 
-  connection.query("SELECT uid, iid, title, price FROM users NATURAL JOIN income where uid = ?", req.user.uid,
+  Income.find({uid: req.user._id}).populate("uid").exec(
     (err, result) => {
       if (err) throw err;
       res.send({ ...result })
     });
 });
 
-router.get('/:id/user-income', auth.isLoggedIn, function (req, res, next) {//------table data by user INcOME id
-
-  connection.query("SELECT uid, iid, title, price FROM users NATURAL JOIN income where iid = ?", req.params.id,
-    (err, result) => {
-      if (err) throw err;
-      res.send({ ...result, message: 'Successfully inserted' })
-    });
+router.get(`/:id/user-income`, auth.isLoggedIn, function (req, res, next) {//------table data by user EXPENSES id
+  Income.find({uid: req.params.id}).populate("uid").exec(
+      (err, result) => {
+          if (err) throw err;
+          res.send({ ...result, message: 'insert OK.' })
+      });
 });
 
 router.post('/', auth.isLoggedIn, (req,res)=>{//-------data insert
   var insertO ={
-    uid: req.user.uid,
+    uid: req.user._id,
     title: req.body.title,
     price: req.body.price
   };
   if(!insertO.title || !insertO.price) return res.send('title or price is empty.');
-  connection.query('insert into income set ?', insertO, (err, result)=>{
+  var income = new Income(insertO);
+  income.save( (err, result)=>{
     if(err)  throw err;
-    res.redirect(301, `/income/${result.insertId}/user-income`)
+    res.redirect(301, `/income/${result._id}/user-income`);
   });
 });
 module.exports = router;

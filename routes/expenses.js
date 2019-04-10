@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var connection = require('../lib/dbConnection');
+// var connection = require('../lib/dbConnection');
 
 var auth = require('../middlewares/authentication');//-------Middleware
 

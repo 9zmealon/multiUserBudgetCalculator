@@ -9,14 +9,16 @@ var passport = require('passport');
 //=========================================
 
 var indexRouter = require('./routes/homepage');
-var idxRouter = require('./routes/index');
-var incRouter = require('./routes/incomeMongo');
 //-------------------------------------------------------------------------------------------------------
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
 var incomeRouter = require('./routes/income');
 var expensesRouter = require('./routes/expenses');
 //-------------------------------------------------------------------------------------------------------
+
+
+
+
 
 var app = express();
 
@@ -37,37 +39,30 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-//===
-var connection = require('./lib/dbConnection');//-------For DB connection
+//=====
+var User = require("./models/User");//-------For MOngoDB connection
 passport.serializeUser(function (user, done) {//-------passport Sereialize
-  done(null, user[0].uid);
+  done(null, user._id);
 });
 
 
 passport.deserializeUser(function (uid, done) {//-------passport Deserialize
-  connection.query("SELECT * from users WHERE uid = ?", uid, function (err, user) {
+  User.findOne({_id: uid}, function (err, user) {
     if (err) throw err;
-    done(err, user[0]);
+    done(err, user);
   });
 });
 //============================================================================================================
-
-
-
-
-
-
 app.use('/', indexRouter);
-app.use('/index', idxRouter);
-
-app.use('/inc', incRouter);
-
 //-----------------------------------------------------------
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/income', incomeRouter);
 app.use('/expenses', expensesRouter);
 //-----------------------------------------------------------
+
+
+
 
 
 
